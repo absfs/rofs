@@ -67,6 +67,10 @@ func NewFS(fs absfs.FileSystem) (*FileSystem, error) {
 
 // OpenFile opens a file using the given flags and the given mode.
 func (f *FileSystem) OpenFile(name string, flag int, perm os.FileMode) (absfs.File, error) {
+	flag = os.O_RDONLY | flag&^absfs.O_ACCESS
+	if flag&absfs.O_ACCESS != os.O_RDONLY {
+		panic("fail")
+	}
 	return f.fs.OpenFile(name, flag, perm)
 }
 

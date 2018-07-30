@@ -23,11 +23,11 @@ func (f *File) ReadAt(b []byte, off int64) (n int, err error) {
 }
 
 func (f *File) Write(p []byte) (int, error) {
-	return f.f.Write(p)
+	return 0, &os.PathError{Op: "write", Path: f.f.Name(), Err: os.ErrPermission}
 }
 
 func (f *File) WriteAt(b []byte, off int64) (n int, err error) {
-	return f.f.WriteAt(b, off)
+	return 0, &os.PathError{Op: "write", Path: f.f.Name(), Err: os.ErrPermission}
 }
 
 func (f *File) Close() error {
@@ -55,9 +55,9 @@ func (f *File) Readdirnames(n int) ([]string, error) {
 }
 
 func (f *File) Truncate(size int64) error {
-	return f.f.Truncate(size)
+	return &os.PathError{Op: "write", Path: f.f.Name(), Err: os.ErrPermission}
 }
 
 func (f *File) WriteString(s string) (n int, err error) {
-	return f.f.WriteString(s)
+	return 0, &os.PathError{Op: "write", Path: f.f.Name(), Err: os.ErrPermission}
 }
