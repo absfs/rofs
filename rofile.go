@@ -1,4 +1,4 @@
-package ptfs
+package rofs
 
 import (
 	"os"
@@ -43,7 +43,7 @@ func (f *File) Stat() (os.FileInfo, error) {
 }
 
 func (f *File) Sync() error {
-	return f.f.Sync()
+	return nil
 }
 
 func (f *File) Readdir(n int) ([]os.FileInfo, error) {
