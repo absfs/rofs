@@ -8,10 +8,10 @@ import (
 )
 
 type FileSystem struct {
-	fs absfs.FileSystem
+	fs absfs.SymlinkFileSystem
 }
 
-func NewFS(fs absfs.FileSystem) (*FileSystem, error) {
+func NewFS(fs absfs.SymlinkFileSystem) (*FileSystem, error) {
 	return &FileSystem{fs}, nil
 }
 
@@ -38,6 +38,19 @@ func (f *FileSystem) Mkdir(name string, perm os.FileMode) error {
 // happens.
 func (f *FileSystem) Remove(name string) error {
 	return os.ErrPermission
+}
+
+// Rename renames (moves) oldpath to newpath. If newpath already exists and
+// is not a directory, Rename replaces it. OS-specific restrictions may apply
+// when oldpath and newpath are in different directories. If there is an
+// error, it will be of type *LinkError.
+func (f *FileSystem) Rename(oldpath, newpath string) error {
+	return &os.LinkError{
+		Op:  "rename",
+		Old: oldpath,
+		New: newpath,
+		Err: os.ErrPermission,
+	}
 }
 
 // Stat returns the FileInfo structure describing file. If there is an error,
@@ -99,4 +112,43 @@ func (f *FileSystem) RemoveAll(path string) (err error) {
 
 func (f *FileSystem) Truncate(name string, size int64) error {
 	return os.ErrPermission
+}
+
+// Lstat returns a FileInfo describing the named file. If the file is a
+// symbolic link, the returned FileInfo describes the symbolic link. Lstat
+// makes no attempt to follow the link. If there is an error, it will be of type *PathError.
+func (f *FileSystem) Lstat(name string) (os.FileInfo, error) {
+	return f.fs.Lstat(name)
+}
+
+// Lchown changes the numeric uid and gid of the named file. If the file is a
+// symbolic link, it changes the uid and gid of the link itself. If there is
+// an error, it will be of type *PathError.
+//
+// On Windows, it always returns the syscall.EWINDOWS error, wrapped in
+// `*PathError`.
+func (f *FileSystem) Lchown(name string, uid, gid int) error {
+	// return f.fs.Lchown(name, uid, gid)
+	return &os.PathError{
+		Op:   "lchown",
+		Path: name,
+		Err:  os.ErrPermission,
+	}
+}
+
+// Readlink returns the destination of the named symbolic link. If there is an
+// error, it will be of type *PathError.
+func (f *FileSystem) Readlink(name string) (string, error) {
+	return f.fs.Readlink(name)
+}
+
+// Symlink creates newname as a symbolic link to oldname. If there is an
+// error, it will be of type *LinkError.
+func (f *FileSystem) Symlink(oldname, newname string) error {
+	return &os.LinkError{
+		Op:  "symlink",
+		Old: oldname,
+		New: newname,
+		Err: os.ErrPermission,
+	}
 }

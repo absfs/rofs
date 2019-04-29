@@ -6,10 +6,27 @@ import (
 	"testing"
 	"time"
 
+	"github.com/absfs/absfs"
 	"github.com/absfs/ioutil"
 	"github.com/absfs/memfs"
+	"github.com/absfs/osfs"
 	"github.com/absfs/rofs"
 )
+
+func TestInterface(t *testing.T) {
+	osfs, err := osfs.NewFS()
+	if err != nil {
+		t.Fatal(err)
+	}
+	testfs, err := rofs.NewFS(osfs)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	var fs absfs.SymlinkFileSystem
+	fs = testfs
+	_ = fs
+}
 
 func TestPtfs(t *testing.T) {
 	wfs, err := memfs.NewFS()
