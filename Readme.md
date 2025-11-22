@@ -13,7 +13,7 @@ Check out the [`absfs`](https://github.com/absfs/absfs) repo for more informatio
 
 ## LICENSE
 
-This project is governed by the MIT License. See [LICENSE](https://github.com/absfs/osfs/blob/master/LICENSE)
+This project is governed by the MIT License. See [LICENSE](https://github.com/absfs/rofs/blob/master/LICENSE)
 
 
 
