@@ -1,6 +1,7 @@
 package rofs
 
 import (
+	"io/fs"
 	"os"
 
 	"github.com/absfs/absfs"
@@ -60,4 +61,10 @@ func (f *File) Truncate(size int64) error {
 
 func (f *File) WriteString(s string) (n int, err error) {
 	return 0, &os.PathError{Op: "write", Path: f.f.Name(), Err: os.ErrPermission}
+}
+
+// ReadDir reads the contents of the directory and returns a slice of up to n
+// DirEntry values. This is a read operation, so it's allowed in read-only mode.
+func (f *File) ReadDir(n int) ([]fs.DirEntry, error) {
+	return f.f.ReadDir(n)
 }

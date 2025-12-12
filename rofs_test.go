@@ -671,20 +671,6 @@ func TestFileSystemReadOperations(t *testing.T) {
 		}
 	})
 
-	t.Run("Separator returns correct path separator", func(t *testing.T) {
-		sep := rfs.Separator()
-		if sep != '/' {
-			t.Errorf("Separator: expected '/', got %c", sep)
-		}
-	})
-
-	t.Run("ListSeparator returns correct list separator", func(t *testing.T) {
-		sep := rfs.ListSeparator()
-		if sep != ':' {
-			t.Errorf("ListSeparator: expected ':', got %c", sep)
-		}
-	})
-
 	t.Run("TempDir returns temp directory", func(t *testing.T) {
 		tmpDir := rfs.TempDir()
 		if tmpDir == "" {
@@ -1051,11 +1037,5 @@ func TestWithOSFS(t *testing.T) {
 		t.Errorf("Open root with osfs: unexpected error %v", err)
 	} else {
 		entries.Close()
-	}
-
-	// Verify separator
-	sep := roFS.Separator()
-	if sep != os.PathSeparator {
-		t.Errorf("Separator: expected %c, got %c", os.PathSeparator, sep)
 	}
 }

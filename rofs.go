@@ -1,6 +1,7 @@
 package rofs
 
 import (
+	"io/fs"
 	"os"
 	"time"
 
@@ -74,14 +75,6 @@ func (f *FileSystem) Chown(name string, uid, gid int) error {
 	return os.ErrPermission
 }
 
-func (f *FileSystem) Separator() uint8 {
-	return f.fs.Separator()
-}
-
-func (f *FileSystem) ListSeparator() uint8 {
-	return f.fs.ListSeparator()
-}
-
 func (f *FileSystem) Chdir(dir string) error {
 	return f.fs.Chdir(dir)
 }
@@ -151,4 +144,22 @@ func (f *FileSystem) Symlink(oldname, newname string) error {
 		New: newname,
 		Err: os.ErrPermission,
 	}
+}
+
+// ReadDir reads the named directory and returns a list of directory entries.
+// This is a read operation, so it's allowed in read-only mode.
+func (f *FileSystem) ReadDir(name string) ([]fs.DirEntry, error) {
+	return f.fs.ReadDir(name)
+}
+
+// ReadFile reads the named file and returns its contents.
+// This is a read operation, so it's allowed in read-only mode.
+func (f *FileSystem) ReadFile(name string) ([]byte, error) {
+	return f.fs.ReadFile(name)
+}
+
+// Sub returns an fs.FS corresponding to the subtree rooted at dir.
+// The result is wrapped in rofs to maintain read-only guarantee.
+func (f *FileSystem) Sub(dir string) (fs.FS, error) {
+	return absfs.FilerToFS(f, dir)
 }
